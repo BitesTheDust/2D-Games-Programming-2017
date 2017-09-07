@@ -1,14 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SpaceShooter
 {
-    public class PlayerSpaceShip : MonoBehaviour
+    public class PlayerSpaceShip : SpaceShipBase
     {
-        public float speed = 1;
+        public float speed = 8;
+        public float minSpeed = 8;
+        public float maxSpeed = 20;
 
-        public GUIText speedText;
+        public const string horizontalAxis = "Horizontal";
+        public const string verticalAxis = "Vertical";
+
+        public Text speedText;
 
         // Use this for initialization
         private void Start()
@@ -17,40 +24,58 @@ namespace SpaceShooter
         }
 
         // Update is called once per frame
-        private void Update()
+        protected override void Update()
         {
-            Vector3 movementVector = GetMovementVector();
+            base.Update();
 
             speedText.text = "SPEED : " + speed;
 
-            transform.Translate(movementVector * speed * Time.deltaTime);
+            speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
         }
 
-        private Vector3 GetMovementVector()
+        private Vector3 GetInputVector()
         {
-            Vector3 movementVector = Vector3.zero;
+            //Vector3 movementVector = Vector3.zero;
 
-            if(Input.GetKey(KeyCode.LeftArrow))
+            float horizontalInput = Input.GetAxis(horizontalAxis);
+            float verticalInput = Input.GetAxis(verticalAxis);
+
+            if (horizontalInput != 0 || verticalInput != 0)
             {
-                movementVector += Vector3.left;
+                speed += 0.5f;
             }
-
-            if (Input.GetKey(KeyCode.RightArrow))
+            else
             {
-                movementVector += Vector3.right;
+                speed -= 1f;
             }
+            //if(Input.GetKey(KeyCode.LeftArrow))
+            //{
+            //    movementVector += Vector3.left;
+            //}
 
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                movementVector += Vector3.up;
-            }
+            //if (Input.GetKey(KeyCode.RightArrow))
+            //{
+            //    movementVector += Vector3.right;
+            //}
 
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                movementVector += Vector3.down;
-            }
+            //if (Input.GetKey(KeyCode.UpArrow))
+            //{
+            //    movementVector += Vector3.up;
+            //}
 
-            return movementVector;
+            //if (Input.GetKey(KeyCode.DownArrow))
+            //{
+            //    movementVector += Vector3.down;
+            //}
+
+            return new Vector3(horizontalInput, verticalInput);
+        }
+
+        protected override void Move()
+        {
+            Vector3 movementVector = GetInputVector();
+
+            transform.Translate(movementVector * speed * Time.deltaTime);
         }
     }
 

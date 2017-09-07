@@ -46,9 +46,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\EnemySpaceShip.cs" />
      <Compile Include="Assets\Scripts\ColorChanger.cs" />
+     <Compile Include="Assets\Scripts\ExampleStuff.cs" />
+     <Compile Include="Assets\Scripts\LevelController.cs" />
      <Compile Include="Assets\Scripts\PlayerSpaceShip.cs" />
+     <Compile Include="Assets\Scripts\SpaceShipBase.cs" />
      <Compile Include="Assets\Scripts\TransformExample.cs" />
+     <Compile Include="Assets\Spawner.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
