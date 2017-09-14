@@ -8,12 +8,15 @@ namespace SpaceShooter
 {
     public class PlayerSpaceShip : SpaceShipBase
     {
+        public Weapon playerWeapon;
+
         public float speed = 8;
         public float minSpeed = 8;
         public float maxSpeed = 20;
 
         public const string horizontalAxis = "Horizontal";
         public const string verticalAxis = "Vertical";
+        public const string FireButtonName = "Fire1";
 
         public Text speedText;
 
@@ -31,6 +34,11 @@ namespace SpaceShooter
             speedText.text = "SPEED : " + speed;
 
             speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
+
+            if(Input.GetButton(FireButtonName))
+            {
+                Shoot();
+            }
         }
 
         private Vector3 GetInputVector()
