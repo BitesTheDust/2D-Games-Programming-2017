@@ -16,14 +16,17 @@ namespace SpaceShooter
 
         public const string horizontalAxis = "Horizontal";
         public const string verticalAxis = "Vertical";
-        public const string FireButtonName = "Fire1";
+        public const string fireButtonName = "Fire1";
+        public const string adjustHPAxis = "AdjustHP";
 
         public Text speedText;
+
+        private Health playerHP;
 
         // Use this for initialization
         private void Start()
         {
-
+            playerHP = GetComponent<Health>();
         }
 
         // Update is called once per frame
@@ -35,9 +38,20 @@ namespace SpaceShooter
 
             speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
 
-            if(Input.GetButton(FireButtonName))
+            if(Input.GetButton(fireButtonName))
             {
                 Shoot();
+            }
+
+            float adjustHpInput = Input.GetAxis(adjustHPAxis);
+
+            if (adjustHpInput > 0.0f)
+            {
+                playerHP.IncreaseHealth(1);
+            }
+            else if (adjustHpInput < 0.0f)
+            {
+                playerHP.DecreaseHealth(1);
             }
         }
 

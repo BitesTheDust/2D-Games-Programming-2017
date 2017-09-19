@@ -47,9 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Interfaces\IDamageProvider.cs" />
+     <Compile Include="Assets\Interfaces\IHealth.cs" />
      <Compile Include="Assets\Scripts\ColorChanger.cs" />
      <Compile Include="Assets\Scripts\EnemySpaceShip.cs" />
      <Compile Include="Assets\Scripts\ExampleStuff.cs" />
+     <Compile Include="Assets\Scripts\Health.cs" />
      <Compile Include="Assets\Scripts\Killbox.cs" />
      <Compile Include="Assets\Scripts\LevelController.cs" />
      <Compile Include="Assets\Scripts\PlayerSpaceShip.cs" />
