@@ -15,7 +15,7 @@ namespace SpaceShooter
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            GameObject otherParent = other.gameObject.transform.parent.gameObject;
+            GameObject otherParent = other.transform.root.gameObject;
 
             if(other.gameObject.CompareTag("Projectile"))
             {

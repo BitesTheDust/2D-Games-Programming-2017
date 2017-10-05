@@ -43,6 +43,13 @@ namespace SpaceShooter
             base.Update();
 
             speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
+
+            Shoot();
+        }
+
+        public override Type UnitType
+        {
+            get { return Type.Enemy; }
         }
 
         public void SetMovementTargets(GameObject[] movementTargets)

@@ -1,10 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Interfaces\IDamageProvider.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Interfaces\IDamageReceiver.cs">
     <Files>
       <File FileName="Assets\Scripts\ColorChanger.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\EnemySpaceShip.cs" Line="1" Column="1" />
       <File FileName="Assets\Interfaces\IDamageProvider.cs" Line="1" Column="1" />
+      <File FileName="Assets\Interfaces\IDamageReceiver.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
