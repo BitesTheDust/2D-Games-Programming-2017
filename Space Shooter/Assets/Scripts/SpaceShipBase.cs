@@ -36,7 +36,10 @@ namespace SpaceShooter
         protected virtual void Awake()
         {
             _weapons = GetComponentsInChildren<Weapon>(includeInactive: true);
-
+            foreach(Weapon weapon in _weapons)
+            {
+                weapon.Init(this);
+            }
             Health = GetComponent<IHealth>();
         }
 
