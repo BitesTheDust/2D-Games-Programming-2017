@@ -9,9 +9,16 @@ namespace SpaceShooter
         [SerializeField]
         private GameObject _prefabToSpawn;
 
+        public GameObject Object
+        {
+            get { return _prefabToSpawn; }
+        }
+
         public GameObject Spawn()
         {
             GameObject spawnedObject = Instantiate(_prefabToSpawn, transform.position, transform.rotation);
+
+            spawnedObject.transform.parent = this.transform;
 
             return spawnedObject;
         }

@@ -29,6 +29,8 @@ namespace SpaceShooter
         {
             GameObject go = Instantiate(_objectPrefab);
 
+            go.transform.parent = this.transform;
+
             if(isActive)
             {
                 Activate(go);
@@ -69,6 +71,11 @@ namespace SpaceShooter
             if(result == null && _shouldGrow)
             {
                 result = AddObject();
+            }
+
+            if(result != null)
+            {
+                Activate(result);
             }
 
             return result;

@@ -49,6 +49,7 @@
      <Compile Include="Assets\Interfaces\IDamageProvider.cs" />
      <Compile Include="Assets\Interfaces\IDamageReceiver.cs" />
      <Compile Include="Assets\Interfaces\IHealth.cs" />
+     <Compile Include="Assets\Scripts\BackgroundScroll.cs" />
      <Compile Include="Assets\Scripts\ColorChanger.cs" />
      <Compile Include="Assets\Scripts\EnemySpaceShip.cs" />
      <Compile Include="Assets\Scripts\ExampleStuff.cs" />

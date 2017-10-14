@@ -81,6 +81,11 @@ namespace SpaceShooter
             //}
         }
 
+        public void Restore()
+        {
+            CurrentHealth = _initHealth;
+        }
+
         protected void Awake()
         {
             CurrentHealth = _initHealth;

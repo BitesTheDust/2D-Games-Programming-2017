@@ -12,6 +12,9 @@ namespace SpaceShooter
         }
 
         [SerializeField]
+        private Spawner _playerSpawner;
+
+        [SerializeField]
         private Spawner _enemySpawner;
 
         [SerializeField]
@@ -32,7 +35,19 @@ namespace SpaceShooter
         [SerializeField]
         private GameObjectPool _enemyProjectilePool;
 
+        [SerializeField]
+        private Transform _playerSpawnPosition;
+
+        [SerializeField, Tooltip("The time between player death and respawn.")]
+        private float _waitToRespawn;
+
+        private PlayerSpaceShip _player = null;
+
+        private GameObject _playerObject;
+
         private int _enemyCount;
+
+        private bool _respawning = false;
 
         protected void Awake()
         {
@@ -48,15 +63,52 @@ namespace SpaceShooter
             if(_enemySpawner == null)
             {
                 Debug.Log("No reference to an enemy spawner.");
-                _enemySpawner = GetComponentInChildren<Spawner>();
+                GameObject spawnerObject = transform.FindChild("Enemy Spawner").gameObject;
+                _enemySpawner = spawnerObject.GetComponent<Spawner>();
 
                 //Transform childTransform = transform.Find("EnemySpawner");
             }
+
+            if (_playerSpawner == null)
+            {
+                Debug.Log("No reference to a player spawner.");
+                GameObject spawnerObject = transform.FindChild("Player Spawner").gameObject;
+                _playerSpawner = spawnerObject.GetComponent<Spawner>();
+            }
+
+            //_player = _playerSpawner.Object.GetComponent<PlayerSpaceShip>();
         }
 
         protected void Start()
         {
+            //StartCoroutine(SpawnPlayer());
+
+            _playerObject = _playerSpawner.Spawn();
+
+
+            _player = _playerObject.GetComponent<PlayerSpaceShip>();
+
             StartCoroutine(SpawnEnemies());
+        }
+
+        protected void Update()
+        {
+            if (!_respawning && _player.Health.IsDead && _player.Lives > 0)
+            {
+                StartCoroutine(SpawnPlayer());
+            }
+        }
+
+        private IEnumerator SpawnPlayer()
+        {
+            _respawning = true;
+            yield return new WaitForSeconds(_waitToRespawn);
+
+            _playerObject.transform.position = _playerSpawner.transform.position;
+            _playerObject.transform.rotation = _playerSpawner.transform.rotation;
+            _playerObject.SetActive(true);
+            _respawning = false;
+            StartCoroutine(_player.RespawnInvincibility());
         }
 
         private IEnumerator SpawnEnemies()
@@ -78,8 +130,6 @@ namespace SpaceShooter
 
                 yield return new WaitForSeconds(_spawnInterval);
             }
-
-            SpawnEnemyUnit();
         }
 
         private EnemySpaceShip SpawnEnemyUnit()

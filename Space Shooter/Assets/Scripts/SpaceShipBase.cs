@@ -43,6 +43,11 @@ namespace SpaceShooter
             Health = GetComponent<IHealth>();
         }
 
+        protected virtual void OnEnable()
+        {
+            Health.Restore();
+        }
+
         protected void Shoot()
         {
             foreach(Weapon weapon in Weapons)
@@ -81,7 +86,9 @@ namespace SpaceShooter
 
         protected virtual void Die()
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
+
+            gameObject.SetActive(false);
         }
 
         protected Projectile GetPooledProjectile()

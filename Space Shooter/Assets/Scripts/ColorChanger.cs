@@ -13,6 +13,8 @@ public class ColorChanger : MonoBehaviour {
     protected float g;
     protected float b;
 
+    public const string colorButtonName = "Color";
+
     private void Awake() {
 
         Debug.Log("Awake");
@@ -43,17 +45,13 @@ public class ColorChanger : MonoBehaviour {
 
         Debug.Log("Update");
 
-        if(Input.GetKey(KeyCode.Space))
+        if(Input.GetButton(colorButtonName))
         {
             r = Random.Range(0f, 1f);
             g = Random.Range(0f, 1f);
             b = Random.Range(0f, 1f);
 
-            //newSpriteColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-
             sr.color = new Color(r, g, b, 1);
-            //sr.color = newSpriteColor;
-            //sr.color = availableColors[Random.Range(0, availableColors.Length)];
         }
     }
 

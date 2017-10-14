@@ -8,28 +8,55 @@ namespace SpaceShooter
 {
     public class PlayerSpaceShip : SpaceShipBase
     {
-        public Weapon playerWeapon;
+        private CapsuleCollider2D _collider;
+        private SpriteRenderer _renderer;
 
-        public float speed = 8;
-        public float minSpeed = 8;
-        public float maxSpeed = 20;
+        //Normal opacity player sprite
+        [SerializeField, Tooltip("Normal color for the player sprite.")]
+        private Color _normalColor;
+
+        //Blinking respawn colors
+        [SerializeField, Tooltip("Colors to cycle through after respawning.")]
+        private Color[] _respawnColors;
+
+        [SerializeField, Tooltip("Amount of time a single invincibility blink lasts.")]
+        private float _blinkTime;
+
+        [SerializeField, Tooltip("How many times player should blink after respawning.")]
+        private int _respawnBlinks;
+
+        [SerializeField, Tooltip("Amount of lives for player, allows respawning.")]
+        private int _lives;
+
+        public int Lives
+        {
+            get { return _lives; }
+            protected set { _lives = value; }
+        }
+
+        [SerializeField]
+        private float localSpeed;
+        [SerializeField]
+        private float minSpeed;
+        [SerializeField]
+        private float maxSpeed;
 
         public const string horizontalAxis = "Horizontal";
         public const string verticalAxis = "Vertical";
         public const string fireButtonName = "Fire1";
-        public const string adjustHPAxis = "AdjustHP";
 
         public override Type UnitType
         {
             get { return Type.Player; }
         }
 
-        public Text speedText;
-
         // Use this for initialization
         private void Start()
         {
+            _collider = GetComponent<CapsuleCollider2D>();
+            _renderer = GetComponentInChildren<SpriteRenderer>();
 
+            //speedText = FindObjectOfType<Text>();
         }
 
         // Update is called once per frame
@@ -37,61 +64,29 @@ namespace SpaceShooter
         {
             base.Update();
 
-            speedText.text = "SPEED : " + speed;
+            //speedText.text = "SPEED : " + localSpeed;
 
-            speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
+            localSpeed = Mathf.Clamp(localSpeed, minSpeed, maxSpeed);
 
             if(Input.GetButton(fireButtonName))
             {
                 Shoot();
             }
-
-            //float adjustHpInput = Input.GetAxis(adjustHPAxis);
-
-            //if (adjustHpInput > 0.0f)
-            //{
-            //    playerHP.IncreaseHealth(1);
-            //}
-            //else if (adjustHpInput < 0.0f)
-            //{
-            //    playerHP.DecreaseHealth(1);
-            //}
         }
 
         private Vector3 GetInputVector()
         {
-            //Vector3 movementVector = Vector3.zero;
-
             float horizontalInput = Input.GetAxis(horizontalAxis);
             float verticalInput = Input.GetAxis(verticalAxis);
 
             if (horizontalInput != 0 || verticalInput != 0)
             {
-                speed += 0.5f;
+                localSpeed += 0.5f;
             }
             else
             {
-                speed -= 1f;
+                localSpeed -= 1f;
             }
-            //if(Input.GetKey(KeyCode.LeftArrow))
-            //{
-            //    movementVector += Vector3.left;
-            //}
-
-            //if (Input.GetKey(KeyCode.RightArrow))
-            //{
-            //    movementVector += Vector3.right;
-            //}
-
-            //if (Input.GetKey(KeyCode.UpArrow))
-            //{
-            //    movementVector += Vector3.up;
-            //}
-
-            //if (Input.GetKey(KeyCode.DownArrow))
-            //{
-            //    movementVector += Vector3.down;
-            //}
 
             return new Vector3(horizontalInput, verticalInput);
         }
@@ -100,7 +95,34 @@ namespace SpaceShooter
         {
             Vector3 movementVector = GetInputVector();
 
-            transform.Translate(movementVector * speed * Time.deltaTime);
+            transform.Translate(movementVector * (Speed * localSpeed) * Time.deltaTime);
+        }
+
+        protected override void Die()
+        {
+            base.Die();
+
+            //Decrease player lives by one
+            Lives -= 1;
+        }
+
+        //Gives blink effect and disables hitbox for a while after respawn
+        public IEnumerator RespawnInvincibility()
+        {
+            _collider.enabled = false;
+
+            for (int i = 0; i < _respawnBlinks; i++)
+            {
+                for(int a = 0; a < _respawnColors.Length; a++)
+                {
+                    _renderer.color = _respawnColors[a];
+                    yield return new WaitForSeconds(_blinkTime);
+                }
+            }
+
+            //Resets normal sprite renderer & collider states
+            _renderer.color = _normalColor;
+            _collider.enabled = true;
         }
     }
 

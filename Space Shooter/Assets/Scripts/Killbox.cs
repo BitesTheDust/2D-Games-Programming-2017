@@ -17,10 +17,10 @@ namespace SpaceShooter
         {
             GameObject otherParent = other.transform.root.gameObject;
 
-            if(other.gameObject.CompareTag("Projectile"))
-            {
-                Destroy(otherParent);
-            }
+            //if(other.gameObject.CompareTag("Projectile"))
+            //{
+            //    Destroy(otherParent);
+            //}
 
         }
     }
