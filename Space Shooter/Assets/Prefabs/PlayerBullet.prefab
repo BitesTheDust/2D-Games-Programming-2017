@@ -164,12 +164,12 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 5a6ced9096a89c44ca5aa440f64e9965, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 0.9
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 130
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -243,8 +243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7840e8e273d1ae4a937d65b5d89cb6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 5
-  _speed: 12
+  _damage: 10
+  _speed: 15
 --- !u!212 &212746682035746920
 SpriteRenderer:
   m_ObjectHideFlags: 1

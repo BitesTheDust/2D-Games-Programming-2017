@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1097343207409484}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.352294, y: -0.7774456, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.3, y: 2.7, z: 1}
   m_Children:
   - {fileID: 4548155330128200}
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b0f3fc39778d3418216fd123c3d7eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cooldownTime: 0.2
+  _cooldownTime: 0.4
   _projectilePrefab: {fileID: 114739245283608786, guid: de37f39236d55a748a051dba9a44d1c2,
     type: 2}
 --- !u!114 &114502033502228860
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 1.5
-  _reachDistance: 0.5
+  _reachDistance: 0.2
   speed: 3
   minSpeed: 3
   maxSpeed: 20
@@ -229,9 +229,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5fd5955c83ab764da853d6083ffc98b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initHealth: 10
+  _initHealth: 20
   _minHealth: 0
-  _maxHealth: 10
+  _maxHealth: 20
 --- !u!212 &212211848352531348
 SpriteRenderer:
   m_ObjectHideFlags: 1
