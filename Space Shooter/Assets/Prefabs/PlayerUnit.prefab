@@ -174,7 +174,7 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 0.078431375}
   _blinkTime: 0.2
   _respawnBlinks: 5
-  _lives: 3
+  _immortalTime: 1.2
   localSpeed: 2
   minSpeed: 2
   maxSpeed: 5

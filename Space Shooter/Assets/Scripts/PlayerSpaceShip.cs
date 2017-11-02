@@ -8,31 +8,22 @@ namespace SpaceShooter
 {
     public class PlayerSpaceShip : SpaceShipBase
     {
-        private CapsuleCollider2D _collider;
+        //private CapsuleCollider2D _collider;
         private SpriteRenderer _renderer;
 
-        //Normal opacity player sprite
+        // Normal opacity player sprite
         [SerializeField, Tooltip("Normal color for the player sprite.")]
         private Color _normalColor;
 
-        //Blinking respawn colors
+        // Blinking respawn colors
         [SerializeField, Tooltip("Colors to cycle through after respawning.")]
         private Color[] _respawnColors;
 
         [SerializeField, Tooltip("Amount of time a single invincibility blink lasts.")]
         private float _blinkTime;
 
-        [SerializeField, Tooltip("How many times player should blink after respawning.")]
-        private int _respawnBlinks;
-
-        [SerializeField, Tooltip("Amount of lives for player, allows respawning.")]
-        private int _lives;
-
-        public int Lives
-        {
-            get { return _lives; }
-            protected set { _lives = value; }
-        }
+        [SerializeField, Tooltip("Amount of time immortality lasts.")]
+        private float _immortalTime;
 
         [SerializeField]
         private float localSpeed;
@@ -53,7 +44,7 @@ namespace SpaceShooter
         // Use this for initialization
         private void Start()
         {
-            _collider = GetComponent<CapsuleCollider2D>();
+            //_collider = GetComponent<CapsuleCollider2D>();
             _renderer = GetComponentInChildren<SpriteRenderer>();
 
             //speedText = FindObjectOfType<Text>();
@@ -101,28 +92,43 @@ namespace SpaceShooter
         protected override void Die()
         {
             base.Die();
-
-            //Decrease player lives by one
-            Lives -= 1;
+            // Decrease player lives by one
+            GameManager.Instance.CurrentLives--;
         }
 
-        //Gives blink effect and disables hitbox for a while after respawn
-        public IEnumerator RespawnInvincibility()
+        public void BecomeInvincible(float time = 0.0f)
         {
-            _collider.enabled = false;
-
-            for (int i = 0; i < _respawnBlinks; i++)
+            if(time <= _immortalTime)
             {
-                for(int a = 0; a < _respawnColors.Length; a++)
+                StartCoroutine(Invincibility(_immortalTime));
+            }
+            else
+            {
+                StartCoroutine(Invincibility(time));
+            }
+        }
+
+        // Gives blink effect and disables hitbox for a while after respawn
+        private IEnumerator Invincibility(float time)
+        {
+            float timer = 0.0f;
+
+            Health.SetImmortal(true);
+
+            while(timer < time)
+            {
+                for (int a = 0; a < _respawnColors.Length; a++)
                 {
+                    timer += _blinkTime;
+                    //color.a = color.a == 1 ? 0 : 1;
                     _renderer.color = _respawnColors[a];
                     yield return new WaitForSeconds(_blinkTime);
                 }
             }
 
-            //Resets normal sprite renderer & collider states
+            // Resets normal sprite renderer & collider states
+            Health.SetImmortal(false);
             _renderer.color = _normalColor;
-            _collider.enabled = true;
         }
     }
 

@@ -20,6 +20,7 @@ namespace SpaceShooter
         private int _maxHealth;
 
         private int _currentHealth;
+        private bool _isImmortal = false;
 
         // Get current health value
         public int CurrentHealth
@@ -42,22 +43,11 @@ namespace SpaceShooter
         // Deals damage to health
         public void DecreaseHealth(int amount)
         {
-            CurrentHealth -= amount;
+            if(!_isImmortal)
+            {
+                CurrentHealth -= amount;
+            }
 
-            ////check if object is alive
-            //if(_health > _minHealth)
-            //{
-            //    //object is alive, so deal damage
-            //    //makes sure health doesn't go under minimum value
-            //    if((_health - amount) < _minHealth)
-            //    {
-            //        _health = _minHealth;
-            //    }
-            //    else
-            //    {
-            //        _health -= amount;
-            //    }
-            //}
         }
 
         // Heals health value
@@ -65,25 +55,16 @@ namespace SpaceShooter
         {
             CurrentHealth += amount;
 
-            ////proceed with healing only when health is under maximum
-            //if (_health < _maxHealth)
-            //{
-            //    //health can be increased, so heal
-            //    //make sure health doesn't go over maximum value
-            //    if ((_health + amount) > _maxHealth)
-            //    {
-            //        _health = _maxHealth;
-            //    }
-            //    else
-            //    {
-            //        _health += amount;
-            //    }
-            //}
         }
 
         public void Restore()
         {
             CurrentHealth = _initHealth;
+        }
+
+        public void SetImmortal(bool isImmortal)
+        {
+            _isImmortal = isImmortal;
         }
 
         protected void Awake()

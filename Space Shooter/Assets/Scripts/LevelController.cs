@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SpaceShooter.States;
+using TMPro;
 
 namespace SpaceShooter
 {
@@ -12,9 +14,9 @@ namespace SpaceShooter
         }
 
         [SerializeField]
-        private Spawner _playerSpawner;
+        private GameStateType _nextState;
 
-        [SerializeField]
+        private Spawner _playerSpawner;
         private Spawner _enemySpawner;
 
         [SerializeField]
@@ -36,7 +38,7 @@ namespace SpaceShooter
         private GameObjectPool _enemyProjectilePool;
 
         [SerializeField]
-        private Transform _playerSpawnPosition;
+        private TextMeshProUGUI _scoreText;
 
         [SerializeField, Tooltip("The time between player death and respawn.")]
         private float _waitToRespawn;
@@ -47,7 +49,12 @@ namespace SpaceShooter
 
         private int _enemyCount;
 
+        private int _enemiesKilled = 0;
+
         private bool _respawning = false;
+
+        [SerializeField]
+        private bool _isLastLevel = false;
 
         protected void Awake()
         {
@@ -65,8 +72,6 @@ namespace SpaceShooter
                 Debug.Log("No reference to an enemy spawner.");
                 GameObject spawnerObject = transform.FindChild("Enemy Spawner").gameObject;
                 _enemySpawner = spawnerObject.GetComponent<Spawner>();
-
-                //Transform childTransform = transform.Find("EnemySpawner");
             }
 
             if (_playerSpawner == null)
@@ -76,28 +81,34 @@ namespace SpaceShooter
                 _playerSpawner = spawnerObject.GetComponent<Spawner>();
             }
 
-            //_player = _playerSpawner.Object.GetComponent<PlayerSpaceShip>();
         }
 
         protected void Start()
         {
-            //StartCoroutine(SpawnPlayer());
-
             _playerObject = _playerSpawner.Spawn();
-
 
             _player = _playerObject.GetComponent<PlayerSpaceShip>();
 
             StartCoroutine(SpawnEnemies());
+
+            int moveTargetCount = transform.Find("MoveTargets").transform.childCount;
+            _enemyMoveTargets = new GameObject[moveTargetCount];
+
+            for (int i = 0; i < _enemyMoveTargets.Length; i++)
+            {
+                _enemyMoveTargets[i] = transform.Find("MoveTargets").transform.GetChild(i).gameObject;
+            }
+
+            _scoreText.text = "Score : " + GameManager.Instance.CurrentScore;
         }
 
-        protected void Update()
-        {
-            if (!_respawning && _player.Health.IsDead && _player.Lives > 0)
-            {
-                StartCoroutine(SpawnPlayer());
-            }
-        }
+        //protected void Update()
+        //{
+        //    if (!_respawning && _player.Health.IsDead && _player.Lives > 0)
+        //    {
+        //        StartCoroutine(SpawnPlayer());
+        //    }
+        //}
 
         private IEnumerator SpawnPlayer()
         {
@@ -107,9 +118,41 @@ namespace SpaceShooter
             _playerObject.transform.position = _playerSpawner.transform.position;
             _playerObject.transform.rotation = _playerSpawner.transform.rotation;
             _playerObject.SetActive(true);
+            _player.BecomeInvincible();
             _respawning = false;
-            StartCoroutine(_player.RespawnInvincibility());
         }
+
+        public void LivesLost()
+        {
+            if(GameManager.Instance.CurrentLives <= 0)
+            {
+                GameStateController.PerformTransition(GameStateType.GameOver);
+            }
+            else
+            {
+                StartCoroutine(SpawnPlayer());
+            }
+        }
+
+        public void EnemyDestroyed()
+		{
+            _scoreText.text = "Score : " + GameManager.Instance.CurrentScore;
+
+			_enemiesKilled++;
+
+			if(_enemiesKilled >= _maxEnemyUnitsToSpawn)
+			{
+				if(_isLastLevel)
+				{
+					GameManager.Instance.PlayerWins = true;
+				}
+
+				if( GameStateController.PerformTransition(_nextState) == false)
+				{
+					Debug.LogError("Could not change state to " + _nextState);
+				}
+			}
+		}
 
         private IEnumerator SpawnEnemies()
         {

@@ -8,6 +8,9 @@ namespace SpaceShooter
     public class EnemySpaceShip : SpaceShipBase
     {
         [SerializeField]
+        private int _score = 0;
+
+        [SerializeField]
         private float _reachDistance = 0.5f;
 
         private GameObject[] _movementTargets;
@@ -66,6 +69,18 @@ namespace SpaceShooter
                     _currentMoveTarget = 0;
                 else
                     _currentMoveTarget++;
+            }
+        }
+
+        protected override void Die()
+        {
+            base.Die();
+
+            GameManager.Instance.IncrementScore(_score);
+
+            if (LevelController.Current != null)
+            {
+                LevelController.Current.EnemyDestroyed();
             }
         }
     }
