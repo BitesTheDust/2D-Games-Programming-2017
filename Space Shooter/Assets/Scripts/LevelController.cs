@@ -38,7 +38,25 @@ namespace SpaceShooter
         private GameObjectPool _enemyProjectilePool;
 
         [SerializeField]
+        private GameObjectPool _healthPowerupPool;
+
+        [SerializeField]
+        private GameObjectPool _weaponPowerupPool;
+
+        [SerializeField, Tooltip("Chance to spawn powerup on enemy death. 0.0 to 1.0")]
+        private float _powerupChance;
+
+        [SerializeField]
         private TextMeshProUGUI _scoreText;
+
+        [SerializeField]
+        private TextMeshProUGUI _healthText;
+
+        [SerializeField]
+        private TextMeshProUGUI _bonusText;
+
+        [SerializeField]
+        private TextMeshProUGUI _bonusHeader;
 
         [SerializeField, Tooltip("The time between player death and respawn.")]
         private float _waitToRespawn;
@@ -99,16 +117,27 @@ namespace SpaceShooter
                 _enemyMoveTargets[i] = transform.Find("MoveTargets").transform.GetChild(i).gameObject;
             }
 
-            _scoreText.text = "Score : " + GameManager.Instance.CurrentScore;
+            _scoreText.text = "" + GameManager.Instance.CurrentScore;
         }
 
-        //protected void Update()
-        //{
-        //    if (!_respawning && _player.Health.IsDead && _player.Lives > 0)
-        //    {
-        //        StartCoroutine(SpawnPlayer());
-        //    }
-        //}
+        protected void Update()
+        {
+            // Set player health to UI component
+            _healthText.text = "" + _player.Health.CurrentHealth;
+
+            // Set player bonus time to UI component if active
+            if(_player.BonusTime > 0)
+            {
+                _bonusText.text = "" + _player.BonusTime;
+                _bonusHeader.text = "Bonus";
+            }
+            // Otherwise hide UI component
+            else
+            {
+                _bonusText.text = "";
+                _bonusHeader.text = "";
+            }
+        }
 
         private IEnumerator SpawnPlayer()
         {
@@ -136,7 +165,7 @@ namespace SpaceShooter
 
         public void EnemyDestroyed()
 		{
-            _scoreText.text = "Score : " + GameManager.Instance.CurrentScore;
+            _scoreText.text = "" + GameManager.Instance.CurrentScore;
 
 			_enemiesKilled++;
 
@@ -152,7 +181,7 @@ namespace SpaceShooter
 					Debug.LogError("Could not change state to " + _nextState);
 				}
 			}
-		}
+        }
 
         private IEnumerator SpawnEnemies()
         {
@@ -201,7 +230,6 @@ namespace SpaceShooter
 
             if(result != null)
             {
-                //return result.GetComponent<Projectile>();
                 Projectile projectile = result.GetComponent<Projectile>();
                 if (projectile == null)
                 {
@@ -223,6 +251,57 @@ namespace SpaceShooter
             else
             {
                 return _enemyProjectilePool.ReturnObject(projectile.gameObject);
+            }
+        }
+
+        public PowerupBase GetPowerUp()
+        {
+            // Attempt powerup spawn
+            float powerupSpawn = Random.value;
+
+            if (powerupSpawn > _powerupChance)
+            {
+                return null;
+            }
+
+            GameObject result = null;
+
+            // Randomize powerup type
+            float type = Random.value;
+
+            if(type < 0.5f)
+            {
+                result = _healthPowerupPool.GetPooledObject();
+            } 
+            else
+            {
+                result = _weaponPowerupPool.GetPooledObject();
+            }
+
+            if (result != null)
+            {
+                PowerupBase powerup = result.GetComponent<PowerupBase>();
+                if (powerup == null)
+                {
+                    Debug.LogError("Powerup component could not be found from the object fetched from the pool.");
+                }
+
+                return powerup;
+            }
+
+            return null;
+        }
+
+        // Return powerup to a pool based on its Type
+        public bool ReturnPowerUp(PowerupBase powerup)
+        {
+            if (powerup.PowerType == PowerupBase.Type.Health)
+            {
+                return _healthPowerupPool.ReturnObject(powerup.gameObject);
+            }
+            else
+            {
+                return _weaponPowerupPool.ReturnObject(powerup.gameObject);
             }
         }
     }

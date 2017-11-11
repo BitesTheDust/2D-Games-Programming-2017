@@ -75,12 +75,20 @@ namespace SpaceShooter
         protected override void Die()
         {
             base.Die();
-
+            
             GameManager.Instance.IncrementScore(_score);
 
             if (LevelController.Current != null)
             {
                 LevelController.Current.EnemyDestroyed();
+
+                // Attempt to spawn a powerup
+                PowerupBase powerup = LevelController.Current.GetPowerUp();
+                if (powerup != null)
+                {
+                    // Place powerup on enemy position
+                    powerup.transform.position = transform.position;
+                }
             }
         }
     }

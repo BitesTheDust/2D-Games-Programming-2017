@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace SpaceShooter
 {
-    public class PlayerSpaceShip : SpaceShipBase
+    public class PlayerSpaceShip : SpaceShipBase, IPowerupReceiver
     {
         //private CapsuleCollider2D _collider;
         private SpriteRenderer _renderer;
@@ -24,6 +24,22 @@ namespace SpaceShooter
 
         [SerializeField, Tooltip("Amount of time immortality lasts.")]
         private float _immortalTime;
+
+        // Are the bonus weapons active
+        private bool _bonusWeapons;
+
+        // Amount of time bonus weapons are active
+        private float _bonusTime;
+
+        // LevelController can access _bonusTime
+        public float BonusTime
+        {
+            get { return _bonusTime; }
+        }
+
+        // How often should bonustime be decreased
+        [SerializeField, Tooltip("Time for each tick on Bonus counter.")]
+        private float _bonusDecreaseInterval = 1.0f;
 
         [SerializeField]
         private float localSpeed;
@@ -44,10 +60,16 @@ namespace SpaceShooter
         // Use this for initialization
         private void Start()
         {
-            //_collider = GetComponent<CapsuleCollider2D>();
             _renderer = GetComponentInChildren<SpriteRenderer>();
+        }
 
-            //speedText = FindObjectOfType<Text>();
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // Set bonus values off
+            _bonusTime = 0;
+            _bonusWeapons = false;
         }
 
         // Update is called once per frame
@@ -55,13 +77,22 @@ namespace SpaceShooter
         {
             base.Update();
 
-            //speedText.text = "SPEED : " + localSpeed;
-
             localSpeed = Mathf.Clamp(localSpeed, minSpeed, maxSpeed);
 
             if(Input.GetButton(fireButtonName))
             {
                 Shoot();
+            }
+        }
+
+        protected void LateUpdate()
+        {
+            // If bonus weapons are active and time has run out
+            if(_bonusTime <= 0 && _bonusWeapons)
+            {
+                // Set bonus off and swap back to normal weapon
+                _bonusWeapons = false;
+                SwapWeapons();
             }
         }
 
@@ -129,6 +160,64 @@ namespace SpaceShooter
             // Resets normal sprite renderer & collider states
             Health.SetImmortal(false);
             _renderer.color = _normalColor;
+        }
+
+        // Counts time down on bonus weapon timer for as long as they are active
+        private IEnumerator BonusTimer()
+        {
+            while(_bonusWeapons)
+            {
+                yield return new WaitForSeconds(_bonusDecreaseInterval);
+
+                _bonusTime--;
+            }
+        }
+
+        // Adds more time to bonus counter
+        public void AddBonusTime(float time)
+        {
+            // If bonus time was 0, turn on bonus weapons
+            if (_bonusTime <= 0)
+            {
+                _bonusWeapons = true;
+                SwapWeapons();
+                StartCoroutine(BonusTimer());
+            }
+
+            // Add time to counter
+            _bonusTime += time;
+        }
+
+        // Swap between normal and bonus weapons
+        private void SwapWeapons()
+        {
+            foreach(Weapon weapon in Weapons)
+            {
+                if(weapon.enabled)
+                {
+                    weapon.enabled = false;
+                }
+                else
+                {
+                    weapon.enabled = true;
+                }
+            }
+        }
+
+        // Receives powerup
+        public void TakePowerup(PowerupBase.PowerUpProperties pUProperties)
+        {
+            // Receive health powerup value
+            if(pUProperties.HealthToProvide > 0)
+            {
+                Health.IncreaseHealth(pUProperties.HealthToProvide);
+            }
+
+            // Receive bonus weapon time
+            if(pUProperties.BonusWeaponTime > 0)
+            {
+                AddBonusTime(pUProperties.BonusWeaponTime);
+            }
         }
     }
 

@@ -19,7 +19,9 @@ namespace SpaceShooter
         [SerializeField]
         private int _maxHealth;
 
+        [SerializeField]
         private int _currentHealth;
+
         private bool _isImmortal = false;
 
         // Get current health value

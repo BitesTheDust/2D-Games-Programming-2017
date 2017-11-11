@@ -49,6 +49,7 @@
      <Compile Include="Assets\Interfaces\IDamageProvider.cs" />
      <Compile Include="Assets\Interfaces\IDamageReceiver.cs" />
      <Compile Include="Assets\Interfaces\IHealth.cs" />
+     <Compile Include="Assets\Interfaces\IPowerupReceiver.cs" />
      <Compile Include="Assets\Scripts\BackgroundScroll.cs" />
      <Compile Include="Assets\Scripts\ColorChanger.cs" />
      <Compile Include="Assets\Scripts\EnemySpaceShip.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Scripts\MenuScripts\MainMenu.cs" />
      <Compile Include="Assets\Scripts\MenuState.cs" />
      <Compile Include="Assets\Scripts\PlayerSpaceShip.cs" />
+     <Compile Include="Assets\Scripts\PowerupBase.cs" />
      <Compile Include="Assets\Scripts\Projectile.cs" />
      <Compile Include="Assets\Scripts\SpaceShipBase.cs" />
      <Compile Include="Assets\Scripts\Spawner.cs" />

@@ -52,6 +52,7 @@ namespace SpaceShooter
         {
             foreach(Weapon weapon in Weapons)
             {
+                if(weapon.enabled)
                 weapon.Shoot();
             }
         }
